@@ -548,8 +548,19 @@ shine.FileManager.prototype.dispose = function () {
 	shine.DEAD = 4;
 
 
+	/**
+	 * Optionally updates the global environment, and then resets all global variables to
+	 * their initial values.
+	 */
+	shine.VM.prototype.reset = function (env) {
+		this._env = env || this._env;
+		// Preserve shine global variable across resets (used for luac compilation).
+		var shineLib = this._globals['shine'];
+		this._resetGlobals();
+		if (shineLib) this._globals['shine'] = shineLib;
+	};
 
-		
+
 	/**
 	 * Resets all global variables to their original values.
 	 */
