@@ -100,7 +100,10 @@
 		this._globals['package'].loaded._G = this._globals;
 
 		// Load environment vars
-		for (var i in this._env) if (this._env.hasOwnProperty(i)) this._globals[i] = this._env[i];
+		for (var i in this._env) if (this._env.hasOwnProperty(i)) {
+			var value = this._env[i];
+			this._globals[i] = shine.Table.canConvertToTable(value) ? new shine.Table(value) : value;
+		}
 	};
 
 

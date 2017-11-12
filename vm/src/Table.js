@@ -62,21 +62,11 @@
 
 		for (i in obj) {
 			if (obj.hasOwnProperty(i)) {
-				var iterate;
-
 				key = isArr? parseInt(i, 10) + 1: i;
 				value = obj[i];
 				if (value === null) value = undefined;
 
-				if (typeof getQualifiedClassName !== 'undefined') {
-					// ActionScript
-					iterate = (getQualifiedClassName(value) == 'Object' && !(value instanceof shine.Table) && !(value instanceof shine.Coroutine) && !(value instanceof shine.Function) && !(value instanceof shine.Closure)) || getQualifiedClassName(value) == 'Array';
-				} else {
-					// JavaScript
-					iterate = (typeof value == 'object' && value.constructor === Object) || value instanceof Array;
-				}
-				
-				this.setMember(key, iterate? new shine.Table(value) : value);
+				this.setMember(key, shine.Table.canConvertToTable(value) ? new shine.Table(value) : value);
 			}
 		}
 		
@@ -89,6 +79,22 @@
 	 * @static
 	 */
 	shine.Table.count = 0;
+
+
+
+
+	/**
+	 * Determines whether an object is implicitly convertable to a Table.
+	 */
+	shine.Table.canConvertToTable = function (value) {
+		if (typeof getQualifiedClassName !== 'undefined') {
+			// ActionScript
+			return (getQualifiedClassName(value) == 'Object' && !(value instanceof shine.Table) && !(value instanceof shine.Coroutine) && !(value instanceof shine.Function) && !(value instanceof shine.Closure)) || getQualifiedClassName(value) == 'Array';
+		} else {
+			// JavaScript
+			return (typeof value == 'object' && value.constructor === Object) || value instanceof Array;
+		}
+	};
 
 
 
